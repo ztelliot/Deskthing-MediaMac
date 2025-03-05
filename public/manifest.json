@@ -6,8 +6,6 @@
   "requires": [
   ],
   "label": "MacOS Media App",
-  "version": "0.1.0",
-  "version_code": "1.0",
   "compatible_server": [
     "9"
   ],

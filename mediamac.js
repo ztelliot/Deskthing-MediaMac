@@ -76,8 +76,7 @@ class MediaMac {
         track_duration: result?.kMRMediaRemoteNowPlayingInfoDuration,
         track_progress: result?.kMRMediaRemoteNowPlayingInfoElapsedTime,
         volume: null,
-        // thumbnail: result?.kMRMediaRemoteNowPlayingInfoArtworkData ? "data:" + (result?.kMRMediaRemoteNowPlayingInfoArtworkMIMEType ?? 'image/png') + ";base64," + result?.kMRMediaRemoteNowPlayingInfoArtworkData : 'N/A',
-        // due to fast-average-color-node crashing on arm64
+        thumbnail: result?.kMRMediaRemoteNowPlayingInfoArtworkData ? "data:" + (result?.kMRMediaRemoteNowPlayingInfoArtworkMIMEType ?? 'image/png') + ";base64," + result?.kMRMediaRemoteNowPlayingInfoArtworkData : 'N/A',
         device: result?.kMRMediaRemoteNowPlayingInfoMediaType ?? 'system',
         id: result?.kMRMediaRemoteNowPlayingInfoContentItemIdentifier ?? '',
         device_id: ''
