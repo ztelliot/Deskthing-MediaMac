@@ -1,12 +1,12 @@
-import MediaWinHandler from './mediawin.js'
+import MediaMacHandler from './mediamac.js'
 import { DeskThing as DK } from 'deskthing-server'
 const DeskThing = DK.getInstance()
 export { DeskThing }
 
-let mediawin
+let mediamac
 
 const start = async () => {
-  mediawin = new MediaWinHandler(DeskThing)
+  mediamac = new MediaMacHandler(DeskThing)
 
   let Data = await DeskThing.getData()
   DeskThing.on('data', (newData) => {
@@ -40,12 +40,12 @@ const handleGet = async (data) => {
   let response
   switch (data.request) {
     case 'song':
-      response = await mediawin.returnSongData()
+      response = await mediamac.returnSongData()
       response = { app: 'client', type: 'song', payload: response }
       DeskThing.sendDataToClient(response)
       break
     case 'refresh':
-      response = await mediawin.checkForRefresh()
+      response = await mediamac.checkForRefresh()
       if (response) {
         response = { app: 'client', type: 'song', payload: response }
         DeskThing.sendDataToClient(response)
@@ -67,42 +67,35 @@ const handleSet = async (data) => {
   let response
   switch (data.request) {
     case 'next':
-      response = await mediawin.next(data.payload)
+      response = await mediamac.next(data.payload)
       if (!response == false) {
         response = { app: 'client', type: 'song', payload: response }
         DeskThing.sendDataToClient(response)
       }
       break
     case 'previous':
-      response = await mediawin.previous()
+      response = await mediamac.previous()
       break
     case 'fast_forward':
-      response = await mediawin.fastForward(data.payload)
+      response = await mediamac.skip(data.payload)
       break
     case 'rewind':
-      response = await mediawin.rewind(data.payload)
+      response = await mediamac.skip(-data.payload)
       break
     case 'play':
-      response = await mediawin.play(data.payload)
+      response = await mediamac.play()
       break
     case 'pause':
+      response = await mediamac.pause()
+      break
     case 'stop':
-      response = await mediawin.pause()
+      response = await mediamac.stop()
       break
     case 'seek':
-      response = await mediawin.seek(data.payload)
+      response = await mediamac.seek(data.payload)
       break
-    case 'like':
-      response = 'Unable to like songs!'
-      break
-    case 'volume':
-      response = await mediawin.volume(data.payload)
-      break
-    case 'repeat':
-      response = await mediawin.repeat(data.payload)
-      break
-    case 'shuffle':
-      response = await mediawin.shuffle(data.payload)
+    default:
+      response = "Not implemented"
       break
   }
 }
