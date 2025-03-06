@@ -34,7 +34,8 @@ jobs:
         name: Extract Version
       - run: |
           jq --arg version $VERSION --arg version_code $VERSION_CODE '. + {version: $version, version_code: $version_code}' public/manifest.json > builds/manifest.json
-          curl -L https://github.com/ztelliot/nowplaying-cli/releases/download/latest/nowplaying-cli-${{ matrix.arch }} -o builds/nowplaying-cli
+          cli_version=$(curl -s https://api.github.com/repos/ztelliot/nowplaying-cli/releases/latest | jq -r '.name')
+          curl -L https://github.com/ztelliot/nowplaying-cli/releases/download/${cli_version}/nowplaying-cli-${{ matrix.arch }} -o builds/nowplaying-cli
           cd builds
           zip -r MediaMac-$VERSION-${{ matrix.arch }}.zip *
         name: Package

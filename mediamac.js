@@ -67,7 +67,7 @@ class MediaMac {
         track_name: result?.kMRMediaRemoteNowPlayingInfoTitle ?? '',
         shuffle_state: result?.kMRMediaRemoteNowPlayingInfoShuffleMode,
         repeat_state: result?.kMRMediaRemoteNowPlayingInfoRepeatMode,
-        is_playing: result?.kMRMediaRemoteNowPlayingInfoPlaybackRate == 1,
+        is_playing: result?.kMRMediaRemoteGetNowPlayingApplicationIsPlaying ?? result?.kMRMediaRemoteNowPlayingInfoPlaybackRate > 0,
         can_fast_forward: true,
         can_skip: true,
         can_like: false,
@@ -77,9 +77,9 @@ class MediaMac {
         track_progress: result?.kMRMediaRemoteNowPlayingInfoElapsedTime,
         volume: null,
         thumbnail: result?.kMRMediaRemoteNowPlayingInfoArtworkData ? "data:" + (result?.kMRMediaRemoteNowPlayingInfoArtworkMIMEType ?? 'image/png') + ";base64," + result?.kMRMediaRemoteNowPlayingInfoArtworkData : 'N/A',
-        device: result?.kMRMediaRemoteNowPlayingInfoMediaType ?? 'system',
+        device: result?.kMRMediaRemoteGetNowPlayingClientDisplayName ?? '',
         id: result?.kMRMediaRemoteNowPlayingInfoContentItemIdentifier ?? '',
-        device_id: ''
+        device_id: result?.kMRMediaRemoteGetNowPlayingClientBundleIdentifier ?? '',
       }
       return musicData;
     }
