@@ -40,16 +40,10 @@ const handleGet = async (data) => {
   let response
   switch (data.request) {
     case 'song':
+    case 'refresh':
       response = await mediamac.returnSongData()
       response = { app: 'client', type: 'song', payload: response }
       DeskThing.sendDataToClient(response)
-      break
-    case 'refresh':
-      response = await mediamac.checkForRefresh()
-      if (response) {
-        response = { app: 'client', type: 'song', payload: response }
-        DeskThing.sendDataToClient(response)
-      }
       break
     default:
       DeskThing.sendError(`Unknown request: ${data.request}`)
@@ -93,6 +87,9 @@ const handleSet = async (data) => {
       break
     case 'seek':
       response = await mediamac.seek(data.payload)
+      break
+    case 'volume':
+      response = await mediamac.volume(data.payload)
       break
     default:
       response = "Not implemented"

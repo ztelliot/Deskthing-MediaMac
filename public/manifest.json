@@ -3,8 +3,7 @@
   "isAudioSource": true,
   "isWebApp": false,
   "isLocalApp": true,
-  "requires": [
-  ],
+  "requires": [],
   "label": "MacOS Media App",
   "compatible_server": [
     "9"

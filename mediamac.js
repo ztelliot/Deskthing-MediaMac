@@ -3,7 +3,6 @@ import { exec } from 'child_process';
 class MediaMac {
   constructor(DeskThing) {
     this.DeskThing = DeskThing
-    this.currentId = null
   }
 
   async sendLog(message) {
@@ -43,16 +42,6 @@ class MediaMac {
     }
   }
 
-  async checkForRefresh() {
-    const result = await this.getInfo();
-    if (result === false) {
-      this.sendError('Music Data returned false! There was an error');
-      return false;
-    } else if (result.id !== this.currentId) {
-      return this.returnSongData()
-    }
-  }
-
   async getInfo() {
     const result = await this.executeCommand('get');
     if (result === false) {
@@ -60,26 +49,26 @@ class MediaMac {
       return false;
     } else {
       const musicData = {
-        album: result?.kMRMediaRemoteNowPlayingInfoAlbum ?? null,
-        artist: result?.kMRMediaRemoteNowPlayingInfoArtist ?? null,
+        album: result?.album ?? null,
+        artist: result?.artist ?? null,
         playlist: null,
         playlist_id: null,
-        track_name: result?.kMRMediaRemoteNowPlayingInfoTitle ?? '',
-        shuffle_state: result?.kMRMediaRemoteNowPlayingInfoShuffleMode,
-        repeat_state: result?.kMRMediaRemoteNowPlayingInfoRepeatMode,
-        is_playing: result?.kMRMediaRemoteGetNowPlayingApplicationIsPlaying ?? result?.kMRMediaRemoteNowPlayingInfoPlaybackRate > 0,
+        track_name: result?.title ?? '',
+        shuffle_state: result?.shuffleMode,
+        repeat_state: result?.repeatMode,
+        is_playing: result?.isPlaying ?? result?.playbackRate > 0,
         can_fast_forward: true,
         can_skip: true,
         can_like: false,
-        can_change_volume: false,
-        can_set_output: false,
-        track_duration: result?.kMRMediaRemoteNowPlayingInfoDuration,
-        track_progress: result?.kMRMediaRemoteNowPlayingInfoElapsedTime,
-        volume: null,
-        thumbnail: result?.kMRMediaRemoteNowPlayingInfoArtworkData ? "data:" + (result?.kMRMediaRemoteNowPlayingInfoArtworkMIMEType ?? 'image/png') + ";base64," + result?.kMRMediaRemoteNowPlayingInfoArtworkData : 'N/A',
-        device: result?.kMRMediaRemoteGetNowPlayingClientDisplayName ?? '',
-        id: result?.kMRMediaRemoteNowPlayingInfoContentItemIdentifier ?? '',
-        device_id: result?.kMRMediaRemoteGetNowPlayingClientBundleIdentifier ?? '',
+        can_change_volume: result?.volume !== null,
+        can_set_output: result?.deviceID !== null,
+        track_duraion: result?.duration ? parseInt(result?.duration) : null,
+        track_progress: result?.elapsedTime ? parseInt(result?.elapsedTime) : null,
+        volume: result?.volume ? parseInt(result?.volume * 100) : null,
+        thumbnail: result?.artworkData ? "data:" + (result?.artworkMIMEType ?? 'image/png') + ";base64," + result?.artworkData : 'N/A',
+        device: result?.deviceName ?? '',
+        id: result?.contentItemIdentifier ?? '',
+        device_id: result?.deviceID.toString() ?? '',
       }
       return musicData;
     }
@@ -87,7 +76,7 @@ class MediaMac {
 
   async executeCommand(command, args = '') {
     return new Promise((resolve, reject) => {
-      exec(`"${__dirname}/nowplaying-cli" ${command} ${args}`, (error, stdout, stderr) => {
+      exec(`"${__dirname}/media-cli" ${command} ${args}`, (error, stdout, stderr) => {
         if (error) {
           this.sendError(`exec error: ${error}`);
           reject(false);
@@ -142,6 +131,11 @@ class MediaMac {
 
   async seek(positionMs) {
     return this.executeCommand('seek', positionMs);
+  }
+
+  async volume(volume) {
+    volume = volume / 100;
+    return this.executeCommand('volume', volume);
   }
 }
 

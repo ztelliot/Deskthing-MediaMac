@@ -12,10 +12,10 @@ fi
 cp "/Applications/DeskThing.app/Contents/Resources/app.asar.unpacked/node_modules/@img/sharp-libvips-darwin-$ARCH/lib/libvips-cpp.42.dylib" /Applications/DeskThing.app/Contents/Frameworks
 ```
 
-2. Chmod `nowplaying-cli`
+2. Chmod `media-cli`
 
 ```shell
-chmod +x ~/Library/Application\ Support/deskthing/apps/mediamac/nowplaying-cli
+chmod +x ~/Library/Application\ Support/deskthing/apps/mediamac/media-cli
 ```
 
 ## Known Issues

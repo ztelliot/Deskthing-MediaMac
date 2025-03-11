@@ -3,15 +3,12 @@ name: NodeJS CI
 on:
   pull_request:
   push:
-    branches: [master]
+    tags:
+      - 'v*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [x64, arm64]
-
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -21,29 +18,25 @@ jobs:
         with:
           node-version: 22
       - run: |
+          VERSION=$(echo $GITHUB_REF_NAME | cut -c 2-)
+          jq --arg version $VERSION '. + {version: $version}' package.json > tmp.json && mv tmp.json package.json
+          VERSION_CODE=$(echo $VERSION | cut -d. -f2-3)
+          jq --arg version $VERSION --arg version_code $VERSION_CODE '. + {version: $version, version_code: $version_code}' public/manifest.json > tmp.json && mv tmp.json public/manifest.json
+        name: Set Version
+      - run: |
           pnpm i
           pnpm build
+          curl -L https://github.com/ztelliot/media-cli/releases/latest/download/media-cli -o builds/media-cli
+          cd builds
+          zip -r MediaMac-$GITHUB_REF_NAME.zip *
         env:
           CI: true
-        name: Build
-      - run: |
-          VERSION=$(jq -r '.version' package.json)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          VERSION_CODE=$(echo $VERSION | cut -d. -f2-3)
-          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
-        name: Extract Version
-      - run: |
-          jq --arg version $VERSION --arg version_code $VERSION_CODE '. + {version: $version, version_code: $version_code}' public/manifest.json > builds/manifest.json
-          cli_version=$(curl -s https://api.github.com/repos/ztelliot/nowplaying-cli/releases/latest | jq -r '.name')
-          curl -L https://github.com/ztelliot/nowplaying-cli/releases/download/${cli_version}/nowplaying-cli-${{ matrix.arch }} -o builds/nowplaying-cli
-          cd builds
-          zip -r MediaMac-$VERSION-${{ matrix.arch }}.zip *
-        name: Package
+        name: Build & Package
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: builds/MediaMac-${{ env.VERSION }}-${{ matrix.arch }}.zip
-          tag_name: ${{ env.VERSION }}
+          files: builds/MediaMac-${{ github.ref_name }}.zip
+          tag_name: ${{ github.ref_name }}
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
