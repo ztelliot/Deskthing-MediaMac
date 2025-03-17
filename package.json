@@ -1,19 +1,32 @@
 {
   "name": "mediamac",
   "description": "The DeskThing Media MacOS App is a local audio control control source for the DeskThing",
+  "private": true,
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "esbuild index.js --bundle --platform=node --outfile=builds/index.js && node buildHelper.cjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "esbuild": "0.21.5"
+    "build": "npm run build-server && node scripts/package.js",
+    "build-server": "esbuild server/index.ts --bundle --platform=node --outfile=dist/index.js",
+    "lint": "eslint .",
+    "postversion": "node -e \"const fs = require('fs'); const manifest = require('./deskthing/manifest.json'); const pkg = require('./package.json'); if (manifest.version !== pkg.version) { manifest.version = pkg.version; fs.writeFileSync('./deskthing/manifest.json', JSON.stringify(manifest, null, 2), 'utf8'); console.log('Updated manifest version to ' + pkg.version); }\""
   },
   "dependencies": {
-    "deskthing-server": "^0.7.5"
+    "deskthing-server": "^0.9.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@types/archiver": "^6.0.3",
+    "@types/node": "^22.10.7",
+    "archiver": "^7.0.1",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^8.0.0",
+    "esbuild": "^0.19.2",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "ts-node": "^10.9.2",
+    "tsm": "^2.3.0",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.0.1"
   }
 }

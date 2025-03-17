@@ -5,17 +5,19 @@
   "isLocalApp": true,
   "requires": [],
   "label": "MacOS Media App",
-  "compatible_server": [
-    "9"
+  "tags": [
+    "audiosource"
   ],
-  "compatible_client": [
-    "9"
-  ],
+  "requiredVersions": {
+    "server": ">=0.9.0",
+    "client": ">=0.9.0"
+  },
   "description": "The DeskThing Media MacOS App is a local audio control control source for the DeskThing",
   "author": "ztelliot",
   "platforms": [
     "mac"
   ],
+  "repository": "https://github.com/ztelliot/Deskthing-MediaMac",
   "homepage": "https://github.com/ztelliot/Deskthing-MediaMac",
-  "repository": "https://github.com/ztelliot/Deskthing-MediaMac"
+  "updateUrl": "https://github.com/ztelliot/Deskthing-MediaMac"
 }

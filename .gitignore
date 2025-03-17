@@ -1,5 +1,7 @@
 .DS_Store
 node_modules
 builds
+dist
 package-lock.json
 pnpm-lock.yaml
+*.zip
