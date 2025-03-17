@@ -13,3 +13,11 @@ cp "/Applications/DeskThing.app/Contents/Resources/app.asar.unpacked/node_module
 ```
 
 ## Known Issues
+
+- info not update when next/previous
+
+## TODO
+
+- implement cache to handle info update
+- update default device info when info update
+- send thumbnail and song info in two different requests
