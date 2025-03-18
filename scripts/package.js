@@ -20,10 +20,14 @@ async function addFilesToArchive(archive, folderPath, baseFolder = "") {
 
 async function createPackage() {
   const packageName = process.env.npm_package_name;
+  const camelCaseName = packageName
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join("");
   const version = process.env.npm_package_version;
 
-  console.log(`Creating package ${packageName}-v${version}.zip`);
-  const output = createWriteStream(`${packageName}-v${version}.zip`);
+  console.log(`Creating package ${camelCaseName}-v${version}.zip`);
+  const output = createWriteStream(`${camelCaseName}-v${version}.zip`);
   const archive = archiver("zip", {
     zlib: { level: 9 },
   });

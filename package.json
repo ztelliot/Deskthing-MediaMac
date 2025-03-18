@@ -1,5 +1,5 @@
 {
-  "name": "mediamac",
+  "name": "media-mac",
   "description": "The DeskThing Media MacOS App is a local audio control control source for the DeskThing",
   "private": true,
   "type": "module",
